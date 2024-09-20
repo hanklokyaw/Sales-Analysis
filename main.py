@@ -9,7 +9,7 @@ from get_latest_file import find_latest_report
 from data_transform_functions import extract_material, agg_so
 
 download_folder_path = "C:/Users/hank.aungkyaw/Downloads"
-SO_prefix = "SalesOrder1yearHKResults"
+SO_prefix = "SalesOrder1yearSalesOnlyHKResults813"
 
 so_filename = find_latest_report(download_folder_path, SO_prefix)
 
@@ -247,7 +247,10 @@ def update_datatable(category_filter, family_filter, material_filter, item_filte
     if item_filter:
         filtered_data = filtered_data[filtered_data['Item'].isin(item_filter)]
 
-    filtered_data = filtered_data.sort_values(by='Sales Date', ascending=True)
+    filtered_data = filtered_data.groupby(['Sales Date','Item','Category', 'Family', 'Material']).agg({'Sales Quantity':'sum', 'Sales Amount':'sum'}).reset_index()
+    print(filtered_data)
+
+    filtered_data = filtered_data.sort_values(by='Sales Date', ascending=False)
 
     return filtered_data.to_dict('records')
 
