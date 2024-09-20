@@ -277,13 +277,42 @@ def update_time_series_plot(category_filter, family_filter, material_filter, ite
     filtered_data['Sales Date'] = pd.to_datetime(filtered_data['Sales Date'], errors='coerce')
 
     # Group by Invoice Date and calculate the average Date Differenceme
-    time_series_data = filtered_data.groupby('Sales Date')['Sales Quantity'].sum().reset_index()
+    time_series_data = filtered_data.groupby('Sales Date')[['Sales Quantity', 'Sales Amount']].sum().reset_index()
 
-    time_series_fig = go.Figure(data=[
-        go.Scatter(x=time_series_data['Sales Date'], y=time_series_data['Sales Quantity'], mode='lines+markers')
-    ])
-    time_series_fig.update_layout(title='Total Sales Quantity Over Time', xaxis_title='Sales Date',
-                                  yaxis_title='Total Sales Quantity')
+    # Create a figure with two line plots, one for Sales Quantity and another for Sales Amount
+    time_series_fig = go.Figure()
+
+    # Add the Sales Quantity line
+    time_series_fig.add_trace(go.Scatter(
+        x=time_series_data['Sales Date'],
+        y=time_series_data['Sales Quantity'],
+        mode='lines',
+        name='Sales Quantity',
+        line=dict(color='blue', dash='solid')
+    ))
+
+    # Add the Sales Amount line on the secondary y-axis
+    time_series_fig.add_trace(go.Scatter(
+        x=time_series_data['Sales Date'],
+        y=time_series_data['Sales Amount'],
+        mode='lines',
+        name='Sales Amount',
+        line=dict(color='green', dash='dot'),
+        yaxis='y2'  # Specifies that this trace will use the secondary y-axis
+    ))
+
+    # Update the layout with secondary y-axis
+    time_series_fig.update_layout(
+        title='Total Sales Quantity and Sales Amount Over Time',
+        xaxis_title='Sales Date',
+        yaxis_title='Total Sales Quantity',
+        yaxis2=dict(
+            title='Total Sales Amount',
+            overlaying='y',  # Overlay the secondary y-axis with the first
+            side='right'  # Place the second axis on the right side
+        ),
+        template='plotly_white'
+    )
 
     return time_series_fig
 

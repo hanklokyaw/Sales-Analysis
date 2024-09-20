@@ -72,7 +72,7 @@ def agg_so(so):
             (so["Item"].str.startswith('OT-')) |
             (so["Item"].str.startswith('RN-')) |
             (so["Item"].str.startswith('SN-'))]
-    so = so[['Item', 'Date', 'Quantity']]
-    agg_df = so.groupby(['Item', 'Date']).agg({'Quantity': 'sum'}).reset_index()
-    agg_df.rename(columns={'Date': 'Sales Date', 'Quantity': 'Sales Quantity'}, inplace=True)
+    so = so[['Item', 'Date', 'Quantity', 'Amount']]
+    agg_df = so.groupby(['Item', 'Date']).agg({'Quantity': 'sum', 'Amount': 'sum'}).reset_index()
+    agg_df.rename(columns={'Date': 'Sales Date', 'Quantity': 'Sales Quantity', 'Amount': 'Sales Amount'}, inplace=True)
     return agg_df
