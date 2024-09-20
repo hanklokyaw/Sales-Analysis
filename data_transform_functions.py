@@ -63,7 +63,6 @@ def agg_so(so):
     so['Document Number'] = so['Document Number'].astype(str)
     so['Item'] = so['Item'].astype(str)
     so['Product Set ID'] = so['Product Set ID'].astype(str)
-    so['Unique_ID'] = so['Document Number'] + '+' + so['Item'] + so['Product Set ID']
     # Filter for items starting with 'ED-', 'RN-', or 'BB-' or 'SN-' or 'PL-' or 'JU-' or 'NC-' or 'OT-'
     so = so[(so["Item"].str.startswith('BB-')) |
             (so["Item"].str.startswith('ED-')) |
@@ -73,7 +72,7 @@ def agg_so(so):
             (so["Item"].str.startswith('OT-')) |
             (so["Item"].str.startswith('RN-')) |
             (so["Item"].str.startswith('SN-'))]
-    so = so[['Unique_ID', 'Item', 'Date', 'Quantity']]
-    agg_df = so.groupby(['Unique_ID', 'Item']).agg({'Date': 'max', 'Quantity': 'sum'}).reset_index()
+    so = so[['Item', 'Date', 'Quantity']]
+    agg_df = so.groupby(['Item']).agg({'Date': 'max', 'Quantity': 'sum'}).reset_index()
     agg_df.rename(columns={'Date': 'Sales Date', 'Quantity': 'Sales Quantity'}, inplace=True)
     return agg_df
