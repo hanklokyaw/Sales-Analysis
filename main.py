@@ -25,30 +25,20 @@ so = pd.read_csv(so_filepath)
 # Print out df to check if they are loading properly
 print(so)
 
-agg_so = agg_so(so)
+agg_so_df = agg_so(so)
 
-agg_so['Category'] = agg_so['Item'].str.split('-').str[0]
-print(agg_so['Category'].unique())
+agg_so_df['Category'] = agg_so_df['Item'].str.split('-').str[0]
+print(agg_so_df['Category'].unique())
 
-agg_so['Family'] = agg_so['Item'].str.split('-').str[1]
-print(agg_so['Family'].unique())
+agg_so_df['Family'] = agg_so_df['Item'].str.split('-').str[1]
+print(agg_so_df['Family'].unique())
 
-agg_so['Material'] = agg_so['Item'].apply(extract_material)
-print(agg_so['Material'].unique())
+agg_so_df['Material'] = agg_so_df['Item'].apply(extract_material)
+print(agg_so_df['Material'].unique())
 
-merged_df = agg_so[agg_so['Material'] != 'Unknown']
+merged_df = agg_so_df[agg_so_df['Material'] != 'Unknown']
+print(merged_df.columns)
 
-# default_df = merged_df.copy()
-# default_df = default_df[
-#     ['Unique_ID', 'Item', 'Category', 'Family', 'Material', 'Sales Date', 'Sales Quantity', 'Invoice Date',
-#      'Invoice Quantity', 'Date Difference']]
-# default_df['Unique_ID'] = default_df['Unique_ID'].str.split('+').str[0]
-# default_df.rename(columns={'Unique_ID': 'Document Number', 'Date Difference': 'Lead Time'}, inplace=True)
-#
-# merged_df = merged_df[
-#     ['Item', 'Category', 'Family', 'Material', 'Sales Date', 'Sales Quantity', 'Invoice Date', 'Invoice Quantity',
-#      'Date Difference']]
-#
 # Initialize Dash app
 app = dash.Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
@@ -59,7 +49,7 @@ material_option = [{'label': name, 'value': name} for name in merged_df['Materia
 item_option = [{'label': name, 'value': name} for name in merged_df['Item'].unique()]
 
 app.layout = dbc.Container([
-    html.H1("Lead Time Dashboard", style={'marginBottom': '40px'}),
+    html.H1("Sales Analysis Dashboard", style={'marginBottom': '40px'}),
     dcc.Input(id='dummy-input', style={'display': 'none'}),
 
     # Dropdowns and radio buttons
@@ -198,7 +188,7 @@ def update_bar_plots(category_filter, family_filter, material_filter, item_filte
     item_fig.update_layout(title='Total Sales Quantity by Item', xaxis_title='Item', yaxis_title='Total Sales Quantity')
 
     # Category bar plot
-    category_data = filtered_data.groupby('Category')['Sales Quantity'].mean().reset_index()
+    category_data = filtered_data.groupby('Category')['Sales Quantity'].sum().reset_index()
     category_data.columns = ['Category', 'Total Sales Quantity']
     category_data = category_data.sort_values(by='Total Sales Quantity', ascending=(sort_order == 'asc'))
 
@@ -209,9 +199,9 @@ def update_bar_plots(category_filter, family_filter, material_filter, item_filte
                                yaxis_title='Total Sales Quantity')
 
     # Family bar plot
-    family_data = filtered_data.groupby('Family')['Sales Quantity'].mean().reset_index()
+    family_data = filtered_data.groupby('Family')['Sales Quantity'].sum().reset_index()
     family_data.columns = ['Family', 'Total Sales Quantity']
-    family_data = family_data.sort_values(by='Sales Quantity', ascending=(sort_order == 'asc')).head(50)
+    family_data = family_data.sort_values(by='Total Sales Quantity', ascending=(sort_order == 'asc')).head(50)
 
     family_fig = go.Figure(data=[
         go.Bar(x=family_data['Family'], y=family_data['Total Sales Quantity'])
@@ -219,7 +209,7 @@ def update_bar_plots(category_filter, family_filter, material_filter, item_filte
     family_fig.update_layout(title='Total Sales Quantity by Family', xaxis_title='Family', yaxis_title='Total Sales Quantity')
 
     # Material bar plot
-    material_data = filtered_data.groupby('Material')['Sales Quantity'].mean().reset_index()
+    material_data = filtered_data.groupby('Material')['Sales Quantity'].sum().reset_index()
     material_data.columns = ['Material', 'Total Sales Quantity']
     material_data = material_data.sort_values(by='Total Sales Quantity', ascending=(sort_order == 'asc'))
 
@@ -245,6 +235,7 @@ def update_bar_plots(category_filter, family_filter, material_filter, item_filte
 # def update_datatable(selected_names, min_available, min_to_order):
 def update_datatable(category_filter, family_filter, material_filter, item_filter):
     filtered_data = merged_df.copy()
+    filtered_data['Sales Date'] = pd.to_datetime(filtered_data['Sales Date'], errors='coerce')
     filtered_data['Sales Date'] = filtered_data['Sales Date'].dt.strftime('%m/%d/%Y')
 
     if category_filter:
@@ -283,8 +274,10 @@ def update_time_series_plot(category_filter, family_filter, material_filter, ite
     if item_filter:
         filtered_data = filtered_data[filtered_data['Item'].isin(item_filter)]
 
-    # Group by Invoice Date and calculate the average Date Difference
-    time_series_data = filtered_data.groupby('Sales Date')['Sales Quantity'].mean().reset_index()
+    filtered_data['Sales Date'] = pd.to_datetime(filtered_data['Sales Date'], errors='coerce')
+
+    # Group by Invoice Date and calculate the average Date Differenceme
+    time_series_data = filtered_data.groupby('Sales Date')['Sales Quantity'].sum().reset_index()
 
     time_series_fig = go.Figure(data=[
         go.Scatter(x=time_series_data['Sales Date'], y=time_series_data['Sales Quantity'], mode='lines+markers')
