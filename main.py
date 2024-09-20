@@ -6,147 +6,27 @@ from dash.dependencies import Input, Output
 import plotly.graph_objs as go
 from dash import dash_table
 from get_latest_file import find_latest_report
+from data_transform_functions import extract_material, agg_so
 
 download_folder_path = "C:/Users/hank.aungkyaw/Downloads"
 SO_prefix = "SalesOrder1yearHKResults"
-INVOICE_prefix = "InvoiceDetailoneyearHKResults"
 
 so_filename = find_latest_report(download_folder_path, SO_prefix)
-invoice_filename = find_latest_report(download_folder_path, INVOICE_prefix)
 
 # Ensure filenames are found
 if so_filename is None:
     raise FileNotFoundError(f"No file found with prefix {SO_prefix} in {download_folder_path}")
-if invoice_filename is None:
-    raise FileNotFoundError(f"No file found with prefix {INVOICE_prefix} in {download_folder_path}")
 
 so_filepath = f"{download_folder_path}/{so_filename}"
-invoice_filepath = f"{download_folder_path}/{invoice_filename}"
 
 # Read sales order on gems
 so = pd.read_csv(so_filepath)
-invoice = pd.read_csv(invoice_filepath)
 
 # Print out df to check if they are loading properly
 print(so)
-print(invoice)
 
-#
-# # Function to extract material
-# def extract_material(item):
-#     if '-yg-' in item.lower():
-#         return 'YG'
-#     elif '-rg-' in item.lower():
-#         return 'RG'
-#     elif '-wg-' in item.lower():
-#         return 'WG'
-#     elif '-ss-' in item.lower():
-#         return 'SS'
-#     elif '-ti-' in item.lower():
-#         return 'TI'
-#     elif '-nb-' in item.lower():
-#         return 'NB'
-#     elif '-sv-' in item.lower():
-#         return 'SV'
-#     elif '-br-' in item.lower():
-#         return 'BR'
-#     elif '-cop-' in item.lower():
-#         return 'CP'
-#     elif '-rb-' in item.lower():
-#         return 'RB'
-#     elif '-display-' in item.lower():
-#         return 'acrylic'
-#     elif '-nb/hm-' in item.lower():
-#         return 'NB/HM'
-#     elif '-nb/ti-' in item.lower():
-#         return 'NB/TI'
-#     elif '-nblti-' in item.lower():
-#         return 'NB/TI'
-#     elif '-nblhm-' in item.lower():
-#         return 'NB/HM'
-#     elif '-ti/rg-' in item.lower():
-#         return 'TI/RG'
-#     elif '-sgy-' in item.lower():
-#         return 'SGY'
-#     elif '-ssv-' in item.lower():
-#         return 'SSV'
-#     elif '-ggw-' in item.lower():
-#         return 'GGW'
-#     elif '-ggy-' in item.lower():
-#         return 'GGY'
-#     elif '-ggr-' in item.lower():
-#         return 'GGR'
-#     elif '-gysv-' in item.lower():
-#         return 'GYSV'
-#     elif '-oring-' in item.lower():
-#         return 'SLC'
-#     elif '-tle-' in item.lower():
-#         return 'TLE'
-#     elif '-tlepost-' in item.lower():
-#         return 'TLE'
-#     elif '-sv' in item.lower():
-#         return 'SV'
-#     elif '-ti' in item.lower():
-#         return 'TI'
-#     else:
-#         return 'Unknown'
-#
-#
-# # Ensure all necessary columns are of type string
-# so['Document Number'] = so['Document Number'].astype(str)
-# so['Item'] = so['Item'].astype(str)
-# so['Product Set ID'] = so['Product Set ID'].astype(str)
-# so['Unique_ID'] = so['Document Number'] + '+' + so['Item'] + so['Product Set ID']
-# # Filter for items starting with 'ED-', 'RN-', or 'BB-' or 'SN-' or 'PL-' or 'JU-' or 'NC-' or 'OT-'
-# so = so[(so["Item"].str.startswith('BB-')) |
-#         (so["Item"].str.startswith('ED-')) |
-#         (so["Item"].str.startswith('JU-')) |
-#         (so["Item"].str.startswith('PL-')) |
-#         (so["Item"].str.startswith('NC-')) |
-#         (so["Item"].str.startswith('OT-')) |
-#         (so["Item"].str.startswith('RN-')) |
-#         (so["Item"].str.startswith('SN-'))]
-# so = so[['Unique_ID', 'Item', 'Date', 'Quantity']]
-# agg_so = so.groupby(['Unique_ID', 'Item']).agg({'Date': 'max', 'Quantity': 'sum'}).reset_index()
-# agg_so.rename(columns={'Date': 'Sales Date', 'Quantity': 'Sales Quantity'}, inplace=True)
-# # agg_so.to_csv("so_test.csv")
-#
-# # Filter out rows with NaN values in 'Created From' column
-# invoice = invoice.dropna(subset=['Created From'])
-#
-# # Filter for rows where 'Created From' starts with 'Sales Order #'
-# invoice = invoice[invoice['Created From'].str.startswith('Sales Order #')]
-#
-# # Remove the 'Sales Order #' prefix from 'Created From' column
-# invoice['Created From'] = invoice['Created From'].str.replace('Sales Order #', '')
-#
-# # Ensure all necessary columns are of type string
-# invoice['Created From'] = invoice['Created From'].astype(str)
-# invoice['Item'] = invoice['Item'].astype(str)
-# invoice['Product Set ID'] = invoice['Product Set ID'].astype(str)
-#
-# # Create 'Unique_ID' column
-# invoice['Unique_ID'] = invoice['Created From'] + '+' + invoice['Item'] + invoice['Product Set ID']
-#
-# # Filter for items starting with specific prefixes
-# invoice = invoice[(invoice["Item"].str.startswith('BB-')) |
-#                   (invoice["Item"].str.startswith('ED-')) |
-#                   (invoice["Item"].str.startswith('JU-')) |
-#                   (invoice["Item"].str.startswith('PL-')) |
-#                   (invoice["Item"].str.startswith('NC-')) |
-#                   (invoice["Item"].str.startswith('OT-')) |
-#                   (invoice["Item"].str.startswith('RN-')) |
-#                   (invoice["Item"].str.startswith('SN-'))]
-#
-# # Select relevant columns
-# invoice = invoice[['Unique_ID', 'Date', 'Quantity']]
-# agg_invoice = invoice.groupby(['Unique_ID']).agg({'Date': 'max', 'Quantity': 'sum'}).reset_index()
-# agg_invoice.rename(columns={'Date': 'Invoice Date', 'Quantity': 'Invoice Quantity'}, inplace=True)
-# # agg_invoice.to_csv("invoice_test.csv")
-#
-# print(so)
-# print(invoice)
-#
+agg_so = agg_so(so)
+
 # merged_df = pd.merge(agg_so, agg_invoice, on='Unique_ID', how='left').reset_index()
 # # merged_df.to_csv("merged_test.csv")
 #
