@@ -125,7 +125,6 @@ def filter_data(start_date, end_date, category_filter, family_filter, material_f
     return filtered_df
 
 
-# Callback to update bar plots
 @app.callback(
     [Output('item-bar-plot', 'figure'),
      Output('category-bar-plot', 'figure'),
@@ -140,18 +139,47 @@ def filter_data(start_date, end_date, category_filter, family_filter, material_f
      Input('sort-order-radio', 'value')]
 )
 def update_bar_plots(start_date, end_date, category_filter, family_filter, material_filter, item_filter, sort_order):
+    # Filter the data
     filtered_data = filter_data(start_date, end_date, category_filter, family_filter, material_filter, item_filter)
 
+    # Function to create a bar plot with custom hover template
     def create_bar_plot(group_col, title):
-        data = filtered_data.groupby(group_col)['Sales Quantity'].sum().reset_index().sort_values('Sales Quantity', ascending=(sort_order == 'asc')).head(50)
-        return go.Figure(data=[go.Bar(x=data[group_col], y=data['Sales Quantity'])]).update_layout(title=title, xaxis_title=group_col, yaxis_title='Total Sales Quantity')
+        # Grouping by the specified column and calculating total quantity and amount
+        grouped_data = filtered_data.groupby(group_col)[['Sales Quantity', 'Sales Amount']].sum().reset_index()
+        # Sorting based on Sales Quantity and limiting to top 50 if applicable
+        sorted_data = grouped_data.sort_values('Sales Quantity', ascending=(sort_order == 'asc')).head(50)
 
+        # Create the bar plot with hovertemplate for both quantity and amount
+        fig = go.Figure(data=[
+            go.Bar(
+                x=sorted_data[group_col],
+                y=sorted_data['Sales Quantity'],
+                hovertemplate=(
+                    '<b>%{x}</b><br>' +
+                    'Total Sales Quantity: %{y}<br>' +
+                    'Total Sales Amount: %{customdata[0]:,.2f}<extra></extra>'
+                ),
+                customdata=sorted_data[['Sales Amount']].values  # Add custom data for hover (Sales Amount)
+            )
+        ])
+
+        # Update layout of the plot
+        fig.update_layout(
+            title=title,
+            xaxis_title=group_col,
+            yaxis_title='Total Sales Quantity',
+            template='plotly_white'
+        )
+        return fig
+
+    # Return the updated figures for all bar plots
     return (
         create_bar_plot('Item', 'Top 50 Sales Quantity by Item'),
         create_bar_plot('Category', 'Total Sales Quantity by Category'),
         create_bar_plot('Family', 'Top 50 Sales Quantity by Family'),
         create_bar_plot('Material', 'Total Sales Quantity by Material')
     )
+
 
 
 # Callback to update the time-series plot
