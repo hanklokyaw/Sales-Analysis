@@ -109,18 +109,49 @@ app.layout = dbc.Container([
 
 # Helper function to filter the data based on user inputs
 def filter_data(start_date, end_date, category_filter, family_filter, material_filter, item_filter):
+    # Make a copy of the merged data
     filtered_df = merged_df.copy()
-    filtered_df = filtered_df[(filtered_df['Sales Date'] >= pd.to_datetime(start_date)) &
-                              (filtered_df['Sales Date'] <= pd.to_datetime(end_date))]
 
+    # Convert the 'Sales Date' column to datetime if it isn't already
+    filtered_df['Sales Date'] = pd.to_datetime(filtered_df['Sales Date'], errors='coerce')
+
+    # Filter by date range
+    if start_date and end_date:
+        filtered_df = filtered_df[
+            (filtered_df['Sales Date'] >= pd.to_datetime(start_date)) &
+            (filtered_df['Sales Date'] <= pd.to_datetime(end_date))
+            ]
+
+    # Apply category filter if specified
     if category_filter:
         filtered_df = filtered_df[filtered_df['Category'].isin(category_filter)]
+
+    # Apply family filter if specified
     if family_filter:
         filtered_df = filtered_df[filtered_df['Family'].isin(family_filter)]
+
+    # Apply material filter if specified
     if material_filter:
         filtered_df = filtered_df[filtered_df['Material'].isin(material_filter)]
+
+    # Apply item filter if specified
     if item_filter:
         filtered_df = filtered_df[filtered_df['Item'].isin(item_filter)]
+
+    # Group the filtered data by necessary columns and sum the sales
+    filtered_df = filtered_df.groupby(['Sales Date', 'Item', 'Category', 'Material', 'Family']).agg({
+        'Sales Quantity': 'sum',
+        'Sales Amount': 'sum'
+    }).reset_index()
+
+    # Sort the dataframe by Sales Date in descending order
+    filtered_df.sort_values(['Sales Date'], ascending=False, inplace=True)
+
+    # Round the Sales Amount to 2 decimal places
+    filtered_df['Sales Amount'] = filtered_df['Sales Amount'].round(2)
+
+    # Format the 'Sales Date' to a readable string (e.g., mm/dd/yyyy)
+    filtered_df['Sales Date'] = filtered_df['Sales Date'].dt.strftime("%m/%d/%Y")
 
     return filtered_df
 
