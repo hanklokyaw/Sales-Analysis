@@ -64,12 +64,17 @@ app.layout = dbc.Container([
             ], style={'marginBottom': '10px'}),
             # Filter dropdowns for Item, Category, Family, and Material
             dbc.Row([
-                dbc.Col(dcc.Dropdown(id='item-dropdown', options=item_options, multi=True, placeholder='Filter by Item'), width=6),
-                dbc.Col(dcc.Dropdown(id='category-dropdown', options=category_options, multi=True, placeholder='Filter by Category'), width=6)
+                dbc.Col(
+                    dcc.Dropdown(id='item-dropdown', options=item_options, multi=True, placeholder='Filter by Item'),
+                    width=6),
+                dbc.Col(dcc.Dropdown(id='category-dropdown', options=category_options, multi=True,
+                                     placeholder='Filter by Category'), width=6)
             ], style={'margin-bottom': '5px'}),
             dbc.Row([
-                dbc.Col(dcc.Dropdown(id='family-dropdown', options=family_options, multi=True, placeholder='Filter by Family'), width=6),
-                dbc.Col(dcc.Dropdown(id='material-dropdown', options=material_options, multi=True, placeholder='Filter by Material'), width=6)
+                dbc.Col(dcc.Dropdown(id='family-dropdown', options=family_options, multi=True,
+                                     placeholder='Filter by Family'), width=6),
+                dbc.Col(dcc.Dropdown(id='material-dropdown', options=material_options, multi=True,
+                                     placeholder='Filter by Material'), width=6)
             ]),
             # Sort order radio buttons
             dbc.Row([
@@ -153,6 +158,9 @@ def filter_data(start_date, end_date, category_filter, family_filter, material_f
     # Format the 'Sales Date' to a readable string (e.g., mm/dd/yyyy)
     filtered_df['Sales Date'] = filtered_df['Sales Date'].dt.strftime("%m/%d/%Y")
 
+    filtered_df = filtered_df[
+        ['Item', 'Category', 'Family', 'Material', 'Sales Date', 'Sales Amount', 'Sales Quantity']]
+
     return filtered_df
 
 
@@ -186,9 +194,9 @@ def update_bar_plots(start_date, end_date, category_filter, family_filter, mater
                 x=sorted_data[group_col],
                 y=sorted_data['Sales Quantity'],
                 hovertemplate=(
-                    '<b>%{x}</b><br>' +
-                    'Total Sales Quantity: %{y}<br>' +
-                    'Total Sales Amount: %{customdata[0]:,.2f}<extra></extra>'
+                        '<b>%{x}</b><br>' +
+                        'Total Sales Quantity: %{y}<br>' +
+                        'Total Sales Amount: %{customdata[0]:,.2f}<extra></extra>'
                 ),
                 customdata=sorted_data[['Sales Amount']].values  # Add custom data for hover (Sales Amount)
             )
@@ -212,7 +220,6 @@ def update_bar_plots(start_date, end_date, category_filter, family_filter, mater
     )
 
 
-
 # Callback to update the time-series plot
 @app.callback(
     Output('time-series-plot', 'figure'),
@@ -229,8 +236,10 @@ def update_time_series_plot(start_date, end_date, category_filter, family_filter
     time_series_data = filtered_data.groupby('Sales Date')[['Sales Quantity', 'Sales Amount']].sum().reset_index()
 
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=time_series_data['Sales Date'], y=time_series_data['Sales Quantity'], mode='lines', name='Sales Quantity', line=dict(color='blue')))
-    fig.add_trace(go.Scatter(x=time_series_data['Sales Date'], y=time_series_data['Sales Amount'], mode='lines', name='Sales Amount', line=dict(color='green', dash='dot'), yaxis='y2'))
+    fig.add_trace(go.Scatter(x=time_series_data['Sales Date'], y=time_series_data['Sales Quantity'], mode='lines',
+                             name='Sales Quantity', line=dict(color='blue')))
+    fig.add_trace(go.Scatter(x=time_series_data['Sales Date'], y=time_series_data['Sales Amount'], mode='lines',
+                             name='Sales Amount', line=dict(color='green', dash='dot'), yaxis='y2'))
 
     fig.update_layout(
         title='Total Sales Quantity and Sales Amount Over Time',
