@@ -32,6 +32,9 @@ agg_so_df['Material'] = agg_so_df['Item'].apply(extract_material)
 # Filter out rows with 'Unknown' materials
 merged_df = agg_so_df[agg_so_df['Material'] != 'Unknown']
 
+merged_df = merged_df[
+    ['Item', 'Category', 'Family', 'Material', 'Sales Date', 'Sales Quantity', 'Sales Amount']]
+
 # Parse 'Sales Date' into datetime format, handle errors with 'coerce'
 merged_df['Sales Date'] = pd.to_datetime(merged_df['Sales Date'], errors='coerce')
 
@@ -158,8 +161,6 @@ def filter_data(start_date, end_date, category_filter, family_filter, material_f
     # Format the 'Sales Date' to a readable string (e.g., mm/dd/yyyy)
     filtered_df['Sales Date'] = filtered_df['Sales Date'].dt.strftime("%m/%d/%Y")
 
-    filtered_df = filtered_df[
-        ['Item', 'Category', 'Family', 'Material', 'Sales Date', 'Sales Amount', 'Sales Quantity']]
 
     return filtered_df
 
