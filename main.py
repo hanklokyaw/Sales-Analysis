@@ -8,6 +8,7 @@ from dash import dash_table
 from get_latest_file import find_latest_report
 from data_transform_functions import extract_material, agg_so
 
+
 # Configuration
 download_folder_path = "C:/Users/hank.aungkyaw/Downloads"
 SO_prefix = "SalesOrder1yearSalesOnlyHKResults677"
