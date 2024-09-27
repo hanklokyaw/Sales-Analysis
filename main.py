@@ -66,6 +66,21 @@ app.layout = dbc.Container([
                     style={'margin-top': '10px'}
                 ))
             ], style={'marginBottom': '10px'}),
+            dbc.Col(
+                dbc.Row([
+                    dcc.RadioItems(
+                        id='time-filter',
+                        options=[
+                            {'label': 'Monthly', 'value': 'M'},
+                            {'label': 'Weekly', 'value': 'W'},
+                            {'label': 'Yearly', 'value': 'Y'}
+                        ],
+                        value='M',  # Default value
+                        labelStyle={'display': 'inline-block', 'margin-top': '20px', 'margin-right': '20px'}
+                    ),
+                ]),
+                width=3  # Adjust the width of the column to align the radio items as desired
+            ),
             # Filter dropdowns for Item, Category, Family, and Material
             dbc.Row([
                 dbc.Col(
@@ -227,13 +242,17 @@ def update_bar_plots(start_date, end_date, category_filter, family_filter, mater
     Output('time-series-plot', 'figure'),
     [Input('date-picker-range', 'start_date'),
      Input('date-picker-range', 'end_date'),
+     Input('type-filter', 'value'),
      Input('category-dropdown', 'value'),
      Input('family-dropdown', 'value'),
      Input('material-dropdown', 'value'),
      Input('item-dropdown', 'value')]
 )
-def update_time_series_plot(start_date, end_date, category_filter, family_filter, material_filter, item_filter):
+def update_time_series_plot(start_date, end_date, type_filter,category_filter, family_filter, material_filter, item_filter):
     filtered_data = filter_data(start_date, end_date, category_filter, family_filter, material_filter, item_filter)
+
+    if type_filter:
+        filtered_data = filtered_data[filtered_data['Note'].isin(type_filter)]
 
     time_series_data = filtered_data.groupby('Sales Date')[['Sales Quantity', 'Sales Amount']].sum().reset_index()
 
