@@ -84,43 +84,160 @@ app.layout = dbc.Container([
     html.H1("Sales Analysis Dashboard", style={'marginBottom': '40px', 'textAlign': 'center'}),
 
     # -------------------------------
-    # Total Sales Amount Card
+    # Total Sales Amount and Additional Cards
     # -------------------------------
-    # Added this section to display the total sales amount
+    # Added section to display the total sales amount and five additional sales metrics
     dbc.Row([
+        # Total Sales Amount Card
         dbc.Col([
             html.Div(
                 style={
-                    'display': 'flex',
-                    'justifyContent': 'center',
-                    'padding': '20px'
+                    'backgroundColor': '#1f77b4',
+                    'padding': '20px',
+                    'borderRadius': '10px',
+                    'textAlign': 'center',
+                    'color': '#ffffff',
+                    'marginBottom': '20px'
                 },
                 children=[
-                    html.Div(
-                        style={
-                            'backgroundColor': '#1f77b4',
-                            'padding': '20px',
-                            'borderRadius': '10px',
-                            'width': '300px',
-                            'textAlign': 'center',
-                            'color': '#ffffff'
-                        },
-                        children=[
-                            html.H2(
-                                children='Total Sales Amount',
-                                style={'marginBottom': '10px'}
-                            ),
-                            html.H1(
-                                id='total-sales-amount',
-                                children='$0.00',
-                                style={'margin': '0'}
-                            )
-                        ]
+                    html.H2(
+                        children='Total Sales Amount',
+                        style={'marginBottom': '10px'}
+                    ),
+                    html.H1(
+                        id='total-sales-amount',
+                        children='$0.00',
+                        style={'margin': '0'}
                     )
                 ]
             )
-        ], width=12)
-    ], style={'marginBottom': '40px'}),  # Adjust spacing as needed
+        ], width=2),  # Adjusted width for the main card
+
+        # SS Sales Amount Card
+        dbc.Col([
+            html.Div(
+                style={
+                    'backgroundColor': '#ff7f0e',
+                    'padding': '15px',
+                    'borderRadius': '10px',
+                    'textAlign': 'center',
+                    'color': '#ffffff',
+                    'marginBottom': '20px'
+                },
+                children=[
+                    html.H4(
+                        children='SS Sales',
+                        style={'marginBottom': '5px'}
+                    ),
+                    html.H5(
+                        id='ss-sales-amount',
+                        children='$0.00',
+                        style={'margin': '0'}
+                    )
+                ]
+            )
+        ], width=2),
+
+        # TI Sales Amount Card
+        dbc.Col([
+            html.Div(
+                style={
+                    'backgroundColor': '#2ca02c',
+                    'padding': '15px',
+                    'borderRadius': '10px',
+                    'textAlign': 'center',
+                    'color': '#ffffff',
+                    'marginBottom': '20px'
+                },
+                children=[
+                    html.H4(
+                        children='TI Sales',
+                        style={'marginBottom': '5px'}
+                    ),
+                    html.H5(
+                        id='ti-sales-amount',
+                        children='$0.00',
+                        style={'margin': '0'}
+                    )
+                ]
+            )
+        ], width=2),
+
+        # NB Sales Amount Card
+        dbc.Col([
+            html.Div(
+                style={
+                    'backgroundColor': '#d62728',
+                    'padding': '15px',
+                    'borderRadius': '10px',
+                    'textAlign': 'center',
+                    'color': '#ffffff',
+                    'marginBottom': '20px'
+                },
+                children=[
+                    html.H4(
+                        children='NB Sales',
+                        style={'marginBottom': '5px'}
+                    ),
+                    html.H5(
+                        id='nb-sales-amount',
+                        children='$0.00',
+                        style={'margin': '0'}
+                    )
+                ]
+            )
+        ], width=2),
+
+        # Gold Sales Amount Card
+        dbc.Col([
+            html.Div(
+                style={
+                    'backgroundColor': '#9467bd',
+                    'padding': '15px',
+                    'borderRadius': '10px',
+                    'textAlign': 'center',
+                    'color': '#ffffff',
+                    'marginBottom': '20px'
+                },
+                children=[
+                    html.H4(
+                        children='Gold Sales',
+                        style={'marginBottom': '5px'}
+                    ),
+                    html.H5(
+                        id='gold-sales-amount',
+                        children='$0.00',
+                        style={'margin': '0'}
+                    )
+                ]
+            )
+        ], width=2),
+
+        # Others Sales Amount Card
+        dbc.Col([
+            html.Div(
+                style={
+                    'backgroundColor': '#8c564b',
+                    'padding': '15px',
+                    'borderRadius': '10px',
+                    'textAlign': 'center',
+                    'color': '#ffffff',
+                    'marginBottom': '20px'
+                },
+                children=[
+                    html.H4(
+                        children='Others Sales',
+                        style={'marginBottom': '5px'}
+                    ),
+                    html.H5(
+                        id='others-sales-amount',
+                        children='$0.00',
+                        style={'margin': '0'}
+                    )
+                ]
+            )
+        ], width=2)
+    ], justify='center'),  # Centers the row
 
     # Filter Controls
     dbc.Row([
@@ -532,33 +649,61 @@ def update_table(start_date, end_date, type_filter, category_filter, family_filt
 
     return filtered_data.to_dict('records')
 
-# -------------------------------
-# Callback to Update Total Sales Amount
-# -------------------------------
+# Callback to update Total Sales Amount and Additional Sales Amount Cards
 @app.callback(
-    Output('total-sales-amount', 'children'),
-    [Input('date-picker-range', 'start_date'),
-     Input('date-picker-range', 'end_date'),
-     Input('type-filter', 'value'),
-     Input('category-dropdown', 'value'),
-     Input('family-dropdown', 'value'),
-     Input('material-dropdown', 'value'),
-     Input('item-dropdown', 'value')]
+    [
+        Output('total-sales-amount', 'children'),
+        Output('ss-sales-amount', 'children'),
+        Output('ti-sales-amount', 'children'),
+        Output('nb-sales-amount', 'children'),
+        Output('gold-sales-amount', 'children'),
+        Output('others-sales-amount', 'children')
+    ],
+    [
+        Input('date-picker-range', 'start_date'),
+        Input('date-picker-range', 'end_date'),
+        Input('type-filter', 'value'),
+        Input('category-dropdown', 'value'),
+        Input('family-dropdown', 'value'),
+        Input('material-dropdown', 'value'),
+        Input('item-dropdown', 'value')
+    ]
 )
-def update_total_sales_amount(start_date, end_date, type_filter, category_filter, family_filter, material_filter, item_filter):
+def update_sales_cards(start_date, end_date, type_filter, category_filter, family_filter, material_filter, item_filter):
     """
-    Updates the Total Sales Amount card based on the selected filters.
+    Updates the Total Sales Amount and five additional sales amount cards based on the selected filters.
     """
     # Filter the data
     filtered_data = filter_data(start_date, end_date, type_filter, category_filter, family_filter, material_filter, item_filter)
 
-    # Calculate the total sales amount
+    # Calculate Total Sales Amount
     total_sales_amount = filtered_data['Sales Amount'].sum()
 
-    # Format the total sales amount as currency
-    formatted_total = f"${total_sales_amount:,.2f}"
+    # Calculate SS Sales Amount
+    ss_sales_amount = filtered_data[filtered_data['Material'] == 'SS']['Sales Amount'].sum()
 
-    return formatted_total
+    # Calculate TI Sales Amount
+    ti_sales_amount = filtered_data[filtered_data['Material'] == 'TI']['Sales Amount'].sum()
+
+    # Calculate NB Sales Amount
+    nb_sales_amount = filtered_data[filtered_data['Material'] == 'NB']['Sales Amount'].sum()
+
+    # Calculate Gold Sales Amount (materials "RG", "WG", "YG")
+    gold_materials = ['RG', 'WG', 'YG']
+    gold_sales_amount = filtered_data[filtered_data['Material'].isin(gold_materials)]['Sales Amount'].sum()
+
+    # Calculate Others Sales Amount (all other materials)
+    others_sales_amount = filtered_data[~filtered_data['Material'].isin(['SS', 'TI', 'NB'] + gold_materials)]['Sales Amount'].sum()
+
+    # Format the amounts as currency
+    formatted_total = f"${total_sales_amount:,.2f}"
+    formatted_ss = f"${ss_sales_amount:,.2f}"
+    formatted_ti = f"${ti_sales_amount:,.2f}"
+    formatted_nb = f"${nb_sales_amount:,.2f}"
+    formatted_gold = f"${gold_sales_amount:,.2f}"
+    formatted_others = f"${others_sales_amount:,.2f}"
+
+    return formatted_total, formatted_ss, formatted_ti, formatted_nb, formatted_gold, formatted_others
 
 # -------------------------------
 # Run the App
