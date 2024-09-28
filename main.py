@@ -136,7 +136,7 @@ app.layout = dbc.Container([
                     )
                 ]
             )
-        ], width=2),
+        ], width=1),
 
         # TI Sales Amount Card
         dbc.Col([
@@ -161,7 +161,7 @@ app.layout = dbc.Container([
                     )
                 ]
             )
-        ], width=2),
+        ], width=1),
 
         # NB Sales Amount Card
         dbc.Col([
@@ -186,7 +186,7 @@ app.layout = dbc.Container([
                     )
                 ]
             )
-        ], width=2),
+        ], width=1),
 
         # Gold Sales Amount Card
         dbc.Col([
@@ -211,7 +211,7 @@ app.layout = dbc.Container([
                     )
                 ]
             )
-        ], width=2),
+        ], width=1),
 
         # Others Sales Amount Card
         dbc.Col([
@@ -236,7 +236,7 @@ app.layout = dbc.Container([
                     )
                 ]
             )
-        ], width=2)
+        ], width=1)
     ], justify='center'),  # Centers the row
 
     # Filter Controls
@@ -696,12 +696,12 @@ def update_sales_cards(start_date, end_date, type_filter, category_filter, famil
     others_sales_amount = filtered_data[~filtered_data['Material'].isin(['SS', 'TI', 'NB'] + gold_materials)]['Sales Amount'].sum()
 
     # Format the amounts as currency
-    formatted_total = f"${total_sales_amount:,.2f}"
-    formatted_ss = f"${ss_sales_amount:,.2f}"
-    formatted_ti = f"${ti_sales_amount:,.2f}"
-    formatted_nb = f"${nb_sales_amount:,.2f}"
-    formatted_gold = f"${gold_sales_amount:,.2f}"
-    formatted_others = f"${others_sales_amount:,.2f}"
+    formatted_total = f"${total_sales_amount:,.0f}"
+    formatted_ss = f"${ss_sales_amount:,.0f}"
+    formatted_ti = f"${ti_sales_amount:,.0f}"
+    formatted_nb = f"${nb_sales_amount:,.0f}"
+    formatted_gold = f"${gold_sales_amount:,.0f}"
+    formatted_others = f"${others_sales_amount:,.0f}"
 
     return formatted_total, formatted_ss, formatted_ti, formatted_nb, formatted_gold, formatted_others
 
