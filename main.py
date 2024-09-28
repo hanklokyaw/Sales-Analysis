@@ -177,7 +177,7 @@ app.layout = dbc.Container([
                     )
                 ])
             ])
-        ], width=3, style={'padding': '20px', 'backgroundColor': '#f8f9fa'})
+        ], style={'padding': '20px', 'backgroundColor': '#f8f9fa'})
     ]),
 
     # Plots
