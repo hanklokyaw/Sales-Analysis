@@ -101,7 +101,7 @@ app.layout = dbc.Container([
                 },
                 children=[
                     html.H2(
-                        children='Total Sales Amount',
+                        children='Total Sales',
                         style={'marginBottom': '10px'}
                     ),
                     html.H1(
