@@ -13,7 +13,7 @@ from data_transform_functions import extract_material, agg_so
 # -------------------------------
 
 DOWNLOAD_FOLDER_PATH = "C:/Users/hank.aungkyaw/Downloads"
-SO_PREFIX = "SalesOrder1yearSalesOnlyHKResults677"
+SO_PREFIX = "SalesOrder1yearSalesOnlyHKResults906"
 
 # -------------------------------
 # Data Loading and Preprocessing
@@ -82,6 +82,45 @@ item_options = [{'label': name, 'value': name} for name in sorted(merged_df['Ite
 app.layout = dbc.Container([
     # Title
     html.H1("Sales Analysis Dashboard", style={'marginBottom': '40px', 'textAlign': 'center'}),
+
+    # -------------------------------
+    # Total Sales Amount Card
+    # -------------------------------
+    # Added this section to display the total sales amount
+    dbc.Row([
+        dbc.Col([
+            html.Div(
+                style={
+                    'display': 'flex',
+                    'justifyContent': 'center',
+                    'padding': '20px'
+                },
+                children=[
+                    html.Div(
+                        style={
+                            'backgroundColor': '#1f77b4',
+                            'padding': '20px',
+                            'borderRadius': '10px',
+                            'width': '300px',
+                            'textAlign': 'center',
+                            'color': '#ffffff'
+                        },
+                        children=[
+                            html.H2(
+                                children='Total Sales Amount',
+                                style={'marginBottom': '10px'}
+                            ),
+                            html.H1(
+                                id='total-sales-amount',
+                                children='$0.00',
+                                style={'margin': '0'}
+                            )
+                        ]
+                    )
+                ]
+            )
+        ], width=12)
+    ], style={'marginBottom': '40px'}),  # Adjust spacing as needed
 
     # Filter Controls
     dbc.Row([
@@ -190,19 +229,19 @@ app.layout = dbc.Container([
     dbc.Row([
         dbc.Col([
             dcc.Graph(id='item-bar-plot')
-        ], width=6),
+        ], width=8),
         dbc.Col([
             dcc.Graph(id='category-bar-plot')
-        ], width=6)
+        ], width=4)
     ], style={'marginTop': '40px'}),
 
     dbc.Row([
         dbc.Col([
             dcc.Graph(id='family-bar-plot')
-        ], width=6),
+        ], width=8),
         dbc.Col([
             dcc.Graph(id='material-bar-plot')
-        ], width=6)
+        ], width=4)
     ], style={'marginTop': '40px'}),
 
     # Data Table
@@ -492,6 +531,34 @@ def update_table(start_date, end_date, type_filter, category_filter, family_filt
         filtered_data['Sales Period'] = filtered_data['Sales Period'].dt.strftime("%m/%d/%Y")
 
     return filtered_data.to_dict('records')
+
+# -------------------------------
+# Callback to Update Total Sales Amount
+# -------------------------------
+@app.callback(
+    Output('total-sales-amount', 'children'),
+    [Input('date-picker-range', 'start_date'),
+     Input('date-picker-range', 'end_date'),
+     Input('type-filter', 'value'),
+     Input('category-dropdown', 'value'),
+     Input('family-dropdown', 'value'),
+     Input('material-dropdown', 'value'),
+     Input('item-dropdown', 'value')]
+)
+def update_total_sales_amount(start_date, end_date, type_filter, category_filter, family_filter, material_filter, item_filter):
+    """
+    Updates the Total Sales Amount card based on the selected filters.
+    """
+    # Filter the data
+    filtered_data = filter_data(start_date, end_date, type_filter, category_filter, family_filter, material_filter, item_filter)
+
+    # Calculate the total sales amount
+    total_sales_amount = filtered_data['Sales Amount'].sum()
+
+    # Format the total sales amount as currency
+    formatted_total = f"${total_sales_amount:,.2f}"
+
+    return formatted_total
 
 # -------------------------------
 # Run the App
