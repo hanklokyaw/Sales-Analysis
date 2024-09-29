@@ -27,6 +27,7 @@ if so_filename is None:
 # Construct the full file path and load the data with low_memory=False to suppress DtypeWarnings
 so_filepath = f"{DOWNLOAD_FOLDER_PATH}/{so_filename}"
 so = pd.read_csv(so_filepath, low_memory=False)
+so = so[so["Date"] >= "4/1/2024"]
 
 # Print out the first few rows to verify data loading
 print("Loaded Sales Order Data:")
@@ -335,14 +336,14 @@ app.layout = dbc.Container([
                                     ),
                                     width=6
                                 )
-                            ], style={'marginBottom': '20px'}),
+                            ], style={'marginBottom': '10px'}),
 
-                        ], style={'padding': '20px', 'backgroundColor': '#f8f9fa'})
+                        ], style={'padding': '10px', 'backgroundColor': '#E4E5E5'})
                     ]),
                 ])
             ], className='light-blue-table')  # Apply custom card style
         ], width=12)
-    ], style={'paddingBottom': '50px'}),
+    ], style={'paddingBottom': '30px'}),
 
 
     # Plots
