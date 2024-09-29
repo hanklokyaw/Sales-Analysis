@@ -243,7 +243,7 @@ app.layout = dbc.Container([
     # Filter Controls
     dbc.Row([
         dbc.Col(
-            html.Div([html.Link(rel='stylesheet', href='/assets/styles.css')], id='gem-wait-plots',
+            html.Div([html.Link(rel='stylesheet', href='/assets/styles.css')],
                      style={'paddingBottom': '100px'}),
             md=6  # Set the column width to 6 for half of the screen
         ),
@@ -386,14 +386,20 @@ app.layout = dbc.Container([
                         ], width=4)
                     ], style={'marginTop': '10px'}),
                 ]),
+                dbc.CardBody([
+                    dbc.Row([
+                        dbc.Col([
+                            dcc.Graph(id='material-bar-plot')
+                        ], width=4),
+                        dbc.Col([
+                            dcc.Graph(id='scatter-plot')
+                        ], width=8)
+                    ], style={'marginTop': '10px'}),
+                ]),
+
             ], className='light-blue-table')  # Apply custom card style
         ], width=12)
     ], style={'paddingBottom': '10px'}),
-
-
-
-
-
 
 
     # Data Table
@@ -739,6 +745,48 @@ def update_sales_cards(start_date, end_date, type_filter, category_filter, famil
     formatted_others = f"${others_sales_amount:,.0f}"
 
     return formatted_total, formatted_ss, formatted_ti, formatted_nb, formatted_gold, formatted_others
+
+
+@app.callback(
+    Output('scatter-plot', 'figure'),
+    [Input('date-picker-range', 'start_date'),
+     Input('date-picker-range', 'end_date'),
+     Input('type-filter', 'value'),
+     Input('category-dropdown', 'value'),
+     Input('family-dropdown', 'value'),
+     Input('material-dropdown', 'value'),
+     Input('item-dropdown', 'value')]
+)
+def update_scatter_plot(start_date, end_date, type_filter, category_filter, family_filter, material_filter,
+                        item_filter):
+    # Filter the data
+    filtered_df = filter_data(start_date, end_date, type_filter, category_filter, family_filter, material_filter,
+                              item_filter)
+
+    # Create scatter plot
+    scatter_plot = go.Figure(data=[
+        go.Scatter(
+            x=filtered_df['Sales Period'],  # Use 'Sales Period' on x-axis
+            y=filtered_df['Sales Amount'],  # Sales Amount on y-axis
+            mode='markers',  # Scatter plot with markers
+            marker=dict(
+                size=10,  # Marker size
+                color='blue',  # Marker color
+                opacity=0.7  # Opacity
+            ),
+            text=filtered_df['Item']  # Hover text shows item
+        )
+    ])
+
+    scatter_plot.update_layout(
+        title="Sales Scatter Plot",
+        xaxis_title="Date",
+        yaxis_title="Sales Amount",
+        template="plotly_white"
+    )
+
+    return scatter_plot
+
 
 # -------------------------------
 # Run the App
