@@ -242,99 +242,112 @@ app.layout = dbc.Container([
     # Filter Controls
     dbc.Row([
         dbc.Col([
-            html.H3("Filters", style={'marginTop': '20px'}),
-
-            # Date Range Picker
-            dbc.Row([
-                dbc.Col([
-                    dcc.DatePickerRange(
-                        id='date-picker-range',
-                        start_date=merged_df['Sales Date'].min(),
-                        end_date=merged_df['Sales Date'].max(),
-                        display_format='MM/DD/YYYY',
-                        style={'margin-top': '10px'}
-                    )
-                ])
-            ], style={'marginBottom': '20px'}),
-
-            # Time Aggregation Filter (Type-Filter)
-            dbc.Row([
-                dbc.Col([
-                    html.Label('Time Aggregation'),
-                    dcc.RadioItems(
-                        id='type-filter',  # Changed ID to 'type-filter' as per user request
-                        options=[
-                            {'label': 'Daily', 'value': 'D'},
-                            {'label': 'Weekly', 'value': 'W'},
-                            {'label': 'Monthly', 'value': 'M'},
-                            {'label': 'Yearly', 'value': 'Y'}
-                        ],
-                        value='M',  # Default value
-                        labelStyle={'display': 'inline-block', 'margin-right': '15px'}
-                    )
-                ])
-            ], style={'marginBottom': '20px'}),
-
-            # Dropdowns for Item, Category, Family, Material
-            dbc.Row([
-                dbc.Col(
-                    dcc.Dropdown(
-                        id='item-dropdown',
-                        options=item_options,
-                        multi=True,
-                        placeholder='Filter by Item',
-                    ),
-                    width=6
+            dbc.Card([
+                dbc.CardHeader(
+                    html.H3("Detail Data Table", className='blue-table-header'),
+                    className='blue-table'  # Apply the same custom styles
                 ),
-                dbc.Col(
-                    dcc.Dropdown(
-                        id='category-dropdown',
-                        options=category_options,
-                        multi=True,
-                        placeholder='Filter by Category',
-                    ),
-                    width=6
-                )
-            ], style={'marginBottom': '10px'}),
+                dbc.CardBody([
+                    dbc.Row([
+                        dbc.Col([
+                            html.H3("Filters", style={'marginTop': '20px'}),
 
-            dbc.Row([
-                dbc.Col(
-                    dcc.Dropdown(
-                        id='family-dropdown',
-                        options=family_options,
-                        multi=True,
-                        placeholder='Filter by Family',
-                    ),
-                    width=6
-                ),
-                dbc.Col(
-                    dcc.Dropdown(
-                        id='material-dropdown',
-                        options=material_options,
-                        multi=True,
-                        placeholder='Filter by Material',
-                    ),
-                    width=6
-                )
-            ], style={'marginBottom': '20px'}),
+                            # Date Range Picker
+                            dbc.Row([
+                                dbc.Col([
+                                    dcc.DatePickerRange(
+                                        id='date-picker-range',
+                                        start_date=merged_df['Sales Date'].min(),
+                                        end_date=merged_df['Sales Date'].max(),
+                                        display_format='MM/DD/YYYY',
+                                        style={'margin-top': '10px'}
+                                    )
+                                ])
+                            ], style={'marginBottom': '20px'}),
 
-            # Sort Order Radio Buttons
-            dbc.Row([
-                dbc.Col([
-                    html.Label('Sort Order'),
-                    dcc.RadioItems(
-                        id='sort-order-radio',
-                        options=[
-                            {'label': 'Ascending', 'value': 'asc'},
-                            {'label': 'Descending', 'value': 'desc'}
-                        ],
-                        value='desc',
-                        labelStyle={'display': 'inline-block', 'margin-right': '15px'}
-                    )
+                            # Time Aggregation Filter (Type-Filter)
+                            dbc.Row([
+                                dbc.Col([
+                                    html.Label('Time Aggregation'),
+                                    dcc.RadioItems(
+                                        id='type-filter',  # Changed ID to 'type-filter' as per user request
+                                        options=[
+                                            {'label': 'Daily', 'value': 'D'},
+                                            {'label': 'Weekly', 'value': 'W'},
+                                            {'label': 'Monthly', 'value': 'M'},
+                                            {'label': 'Yearly', 'value': 'Y'}
+                                        ],
+                                        value='M',  # Default value
+                                        labelStyle={'display': 'inline-block', 'margin-right': '15px'}
+                                    )
+                                ])
+                            ], style={'marginBottom': '20px'}),
+
+                            # Dropdowns for Item, Category, Family, Material
+                            dbc.Row([
+                                dbc.Col(
+                                    dcc.Dropdown(
+                                        id='item-dropdown',
+                                        options=item_options,
+                                        multi=True,
+                                        placeholder='Filter by Item',
+                                    ),
+                                    width=6
+                                ),
+                                dbc.Col(
+                                    dcc.Dropdown(
+                                        id='category-dropdown',
+                                        options=category_options,
+                                        multi=True,
+                                        placeholder='Filter by Category',
+                                    ),
+                                    width=6
+                                )
+                            ], style={'marginBottom': '10px'}),
+
+                            dbc.Row([
+                                dbc.Col(
+                                    dcc.Dropdown(
+                                        id='family-dropdown',
+                                        options=family_options,
+                                        multi=True,
+                                        placeholder='Filter by Family',
+                                    ),
+                                    width=6
+                                ),
+                                dbc.Col(
+                                    dcc.Dropdown(
+                                        id='material-dropdown',
+                                        options=material_options,
+                                        multi=True,
+                                        placeholder='Filter by Material',
+                                    ),
+                                    width=6
+                                )
+                            ], style={'marginBottom': '20px'}),
+
+                            # Sort Order Radio Buttons
+                            dbc.Row([
+                                dbc.Col([
+                                    html.Label('Sort Order'),
+                                    dcc.RadioItems(
+                                        id='sort-order-radio',
+                                        options=[
+                                            {'label': 'Ascending', 'value': 'asc'},
+                                            {'label': 'Descending', 'value': 'desc'}
+                                        ],
+                                        value='desc',
+                                        labelStyle={'display': 'inline-block', 'margin-right': '15px'}
+                                    )
+                                ])
+                            ])
+                        ], style={'padding': '20px', 'backgroundColor': '#f8f9fa'})
+                    ]),
                 ])
-            ])
-        ], style={'padding': '20px', 'backgroundColor': '#f8f9fa'})
-    ]),
+            ], className='light-blue-table')  # Apply custom card style
+        ], width=12)
+    ], style={'paddingBottom': '50px'}),
+
 
     # Plots
     dbc.Row([
