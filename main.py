@@ -244,14 +244,12 @@ app.layout = dbc.Container([
         dbc.Col([
             dbc.Card([
                 dbc.CardHeader(
-                    html.H3("Detail Data Table", className='blue-table-header'),
+                    html.H3("Filters", className='blue-table-header'),
                     className='blue-table'  # Apply the same custom styles
                 ),
                 dbc.CardBody([
                     dbc.Row([
                         dbc.Col([
-                            html.H3("Filters", style={'marginTop': '20px'}),
-
                             # Date Range Picker
                             dbc.Row([
                                 dbc.Col([
