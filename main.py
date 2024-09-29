@@ -260,11 +260,7 @@ app.layout = dbc.Container([
                                         display_format='MM/DD/YYYY',
                                         style={'margin-top': '10px'}
                                     )
-                                ])
-                            ], style={'marginBottom': '20px'}),
-
-                            # Time Aggregation Filter (Type-Filter)
-                            dbc.Row([
+                                ]),
                                 dbc.Col([
                                     html.Label('Time Aggregation'),
                                     dcc.RadioItems(
@@ -276,6 +272,18 @@ app.layout = dbc.Container([
                                             {'label': 'Yearly', 'value': 'Y'}
                                         ],
                                         value='M',  # Default value
+                                        labelStyle={'display': 'inline-block', 'margin-right': '15px'}
+                                    )
+                                ]),
+                                dbc.Col([
+                                    html.Label('Sort Order'),
+                                    dcc.RadioItems(
+                                        id='sort-order-radio',
+                                        options=[
+                                            {'label': 'Ascending', 'value': 'asc'},
+                                            {'label': 'Descending', 'value': 'desc'}
+                                        ],
+                                        value='desc',
                                         labelStyle={'display': 'inline-block', 'margin-right': '15px'}
                                     )
                                 ])
@@ -324,21 +332,6 @@ app.layout = dbc.Container([
                                 )
                             ], style={'marginBottom': '20px'}),
 
-                            # Sort Order Radio Buttons
-                            dbc.Row([
-                                dbc.Col([
-                                    html.Label('Sort Order'),
-                                    dcc.RadioItems(
-                                        id='sort-order-radio',
-                                        options=[
-                                            {'label': 'Ascending', 'value': 'asc'},
-                                            {'label': 'Descending', 'value': 'desc'}
-                                        ],
-                                        value='desc',
-                                        labelStyle={'display': 'inline-block', 'margin-right': '15px'}
-                                    )
-                                ])
-                            ])
                         ], style={'padding': '20px', 'backgroundColor': '#f8f9fa'})
                     ]),
                 ])
