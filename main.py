@@ -126,7 +126,7 @@ app.layout = dbc.Container([
                 },
                 children=[
                     html.H4(
-                        children='SS Sales',
+                        children='Steel Sales',
                         style={'marginBottom': '5px'}
                     ),
                     html.H5(
@@ -151,7 +151,7 @@ app.layout = dbc.Container([
                 },
                 children=[
                     html.H4(
-                        children='TI Sales',
+                        children='Titanium Sales',
                         style={'marginBottom': '5px'}
                     ),
                     html.H5(
@@ -176,7 +176,7 @@ app.layout = dbc.Container([
                 },
                 children=[
                     html.H4(
-                        children='NB Sales',
+                        children='Niobium Sales',
                         style={'marginBottom': '5px'}
                     ),
                     html.H5(
