@@ -413,7 +413,7 @@ app.layout = dbc.Container([
                                 value='Sales Amount',  # Default value
                                 labelStyle={'display': 'inline-block', 'margin-right': '15px'}
                             )
-                        ], width=2),
+                        ], width=4),
                         dbc.Col([
                             dcc.Dropdown(
                                 id='scatter-x-axis',  # Changed ID to 'type-filter' as per user request
