@@ -348,28 +348,53 @@ app.layout = dbc.Container([
 
     # Plots
     dbc.Row([
+        dbc.Col(
+            html.Div([html.Link(rel='stylesheet', href='/assets/styles.css')], id='gem-wait-plots',
+                     style={'paddingBottom': '100px'}),
+            md=6  # Set the column width to 6 for half of the screen
+        ),
         dbc.Col([
-            dcc.Graph(id='time-series-plot')
+            dbc.Card([
+                dbc.CardHeader(
+                    html.H3("Plots", className='blue-table-header'),
+                    className='blue-table'  # Apply the same custom styles
+                ),
+                dbc.CardBody([
+                    dbc.Row([
+                        dbc.Col([
+                            dcc.Graph(id='time-series-plot')
+                        ], width=12)
+                    ], style={'marginTop': '10px'}),
+                ]),
+                dbc.CardBody([
+                    dbc.Row([
+                        dbc.Col([
+                            dcc.Graph(id='item-bar-plot')
+                        ], width=8),
+                        dbc.Col([
+                            dcc.Graph(id='category-bar-plot')
+                        ], width=4)
+                    ], style={'marginTop': '10px'}),
+                ]),
+                dbc.CardBody([
+                    dbc.Row([
+                        dbc.Col([
+                            dcc.Graph(id='family-bar-plot')
+                        ], width=8),
+                        dbc.Col([
+                            dcc.Graph(id='material-bar-plot')
+                        ], width=4)
+                    ], style={'marginTop': '10px'}),
+                ]),
+            ], className='light-blue-table')  # Apply custom card style
         ], width=12)
-    ], style={'marginTop': '40px'}),
+    ], style={'paddingBottom': '10px'}),
 
-    dbc.Row([
-        dbc.Col([
-            dcc.Graph(id='item-bar-plot')
-        ], width=8),
-        dbc.Col([
-            dcc.Graph(id='category-bar-plot')
-        ], width=4)
-    ], style={'marginTop': '40px'}),
 
-    dbc.Row([
-        dbc.Col([
-            dcc.Graph(id='family-bar-plot')
-        ], width=8),
-        dbc.Col([
-            dcc.Graph(id='material-bar-plot')
-        ], width=4)
-    ], style={'marginTop': '40px'}),
+
+
+
+
 
     # Data Table
     dbc.Row([
@@ -629,7 +654,7 @@ def update_time_series_plot(start_date, end_date, type_filter, category_filter, 
             showgrid=False,
             zeroline=False
         ),
-        legend=dict(x=0.01, y=0.99, bgcolor='rgba(255,255,255,0)'),
+        legend=dict(x=1, y=1.2, bgcolor='rgba(255,255,255,0)'),
         template='plotly_white'
     )
 
