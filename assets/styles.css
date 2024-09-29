@@ -1,0 +1,78 @@
+/* Dark blue background and white text for the card header */
+.custom-header {
+    background-color: #1F78B4;  /* Dark blue color */
+    color: white;  /* White text */
+    text-align: center;  /* Center-align text */
+    font-weight: bold;  /* Bold text */
+    font-size: 1.25rem;  /* Larger font size */
+    padding: 10px;  /* Optional padding for more space */
+}
+
+/* Custom border color for the card */
+.custom-card {
+    border: 1px solid #E4E5E5;  /* Dark green border color */
+    background-color: #E4E5E5;
+}
+
+/* Custom border color for the card */
+.green-table-header {
+    background-color: green;  /* Dark blue color */
+    color: white;  /* White text */
+    text-align: center;  /* Center-align text */
+    font-weight: bold;  /* Bold text */
+    font-size: 1.25rem;  /* Larger font size */
+    padding: 10px;  /* Optional padding for more space */
+}
+
+/* Custom border color for the card */
+.green-table {
+    border: 1px solid green;  /* Dark green border color */
+    background-color: green;
+}
+
+.light-green-table {
+    border: 1px solid #d3f4d3;  /* Dark green border color */
+    background-color: #d3f4d3;
+}
+
+/* Custom border color for the card */
+.yellow-table-header {
+    background-color: 'dark goldenrod';  /* Dark blue color */
+    color: white;  /* White text */
+    text-align: center;  /* Center-align text */
+    font-weight: bold;  /* Bold text */
+    font-size: 1.25rem;  /* Larger font size */
+    padding: 10px;  /* Optional padding for more space */
+}
+
+/* Custom border color for the card */
+.yellow-table {
+    border: 1px solid darkgoldenrod;  /* Dark green border color */
+    background-color: darkgoldenrod;
+}
+
+.light-yellow-table {
+    border: 1px solid #fff9c4;  /* Dark green border color */
+    background-color: #fff9c4;
+}
+
+/* Custom border color for the card */
+.blue-table-header {
+    background-color: #1F78B4;  /* Dark blue color */
+    color: white;  /* White text */
+    text-align: center;  /* Center-align text */
+    font-weight: bold;  /* Bold text */
+    font-size: 1.25rem;  /* Larger font size */
+    padding: 10px;  /* Optional padding for more space */
+}
+
+/* Custom border color for the card */
+.blue-table {
+    border: 1px solid #1F78B4;  /* Dark green border color */
+    background-color: #1F78B4;
+}
+
+.light-blue-table {
+    border: 1px solid #E4E5E5;  /* Dark green border color */
+    background-color: #E4E5E5;
+}

@@ -241,6 +241,11 @@ app.layout = dbc.Container([
 
     # Filter Controls
     dbc.Row([
+        dbc.Col(
+            html.Div([html.Link(rel='stylesheet', href='/assets/styles.css')], id='gem-wait-plots',
+                     style={'paddingBottom': '100px'}),
+            md=6  # Set the column width to 6 for half of the screen
+        ),
         dbc.Col([
             dbc.Card([
                 dbc.CardHeader(
@@ -262,7 +267,7 @@ app.layout = dbc.Container([
                                     )
                                 ]),
                                 dbc.Col([
-                                    html.Label('Time Aggregation'),
+                                    html.Label('Time Format'),
                                     dcc.RadioItems(
                                         id='type-filter',  # Changed ID to 'type-filter' as per user request
                                         options=[
@@ -276,7 +281,7 @@ app.layout = dbc.Container([
                                     )
                                 ]),
                                 dbc.Col([
-                                    html.Label('Sort Order'),
+                                    html.Label('Sort'),
                                     dcc.RadioItems(
                                         id='sort-order-radio',
                                         options=[
