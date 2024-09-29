@@ -349,7 +349,7 @@ app.layout = dbc.Container([
     # Plots
     dbc.Row([
         dbc.Col(
-            html.Div([html.Link(rel='stylesheet', href='/assets/styles.css')], id='gem-wait-plots',
+            html.Div([html.Link(rel='stylesheet', href='/assets/styles.css')],
                      style={'paddingBottom': '100px'}),
             md=6  # Set the column width to 6 for half of the screen
         ),
@@ -389,11 +389,8 @@ app.layout = dbc.Container([
                 dbc.CardBody([
                     dbc.Row([
                         dbc.Col([
-                            dcc.Graph(id='material-bar-plot')
-                        ], width=4),
-                        dbc.Col([
                             dcc.Graph(id='scatter-plot')
-                        ], width=8)
+                        ], width=12)
                     ], style={'marginTop': '10px'}),
                 ]),
 
