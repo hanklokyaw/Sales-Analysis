@@ -389,11 +389,70 @@ app.layout = dbc.Container([
                 dbc.CardBody([
                     dbc.Row([
                         dbc.Col([
-                            dcc.Graph(id='scatter-plot')
-                        ], width=12)
-                    ], style={'marginTop': '10px'}),
+                            html.Label('Time Format'),
+                            dcc.RadioItems(
+                                id='scatter-type-filter',  # Changed ID to 'type-filter' as per user request
+                                options=[
+                                    {'label': 'Daily', 'value': 'D'},
+                                    {'label': 'Weekly', 'value': 'W'},
+                                    {'label': 'Monthly', 'value': 'M'},
+                                    {'label': 'Yearly', 'value': 'Y'}
+                                ],
+                                value='D',  # Default value
+                                labelStyle={'display': 'inline-block', 'margin-right': '15px'}
+                            )
+                        ], width=4),
+                        dbc.Col([
+                            html.Label('Size'),
+                            dcc.RadioItems(
+                                id='scatter-size-filter',  # Changed ID to 'type-filter' as per user request
+                                options=[
+                                    {'label': 'Sales Amount', 'value': 'Sales Amount'},
+                                    {'label': 'Sales Quantity', 'value': 'Sales Quantity'},
+                                ],
+                                value='Sales Amount',  # Default value
+                                labelStyle={'display': 'inline-block', 'margin-right': '15px'}
+                            )
+                        ], width=2),
+                        dbc.Col([
+                            dcc.Dropdown(
+                                id='scatter-x-axis',  # Changed ID to 'type-filter' as per user request
+                                options=[
+                                    {'label': 'Sales Date', 'value': 'Sales Period'},
+                                    {'label': 'Item', 'value': 'Item'},
+                                    {'label': 'Category', 'value': 'Category'},
+                                    {'label': 'Family', 'value': 'Family'},
+                                    {'label': 'Material', 'value': 'Material'}
+                                ],
+                                value='Category',  # Default value
+                                placeholder='X axis',
+                                multi=False,
+                            )
+                        ], width=2),
+                        dbc.Col([
+                            dcc.Dropdown(
+                                id='scatter-y-axis',  # Changed ID to 'type-filter' as per user request
+                                options=[
+                                    {'label': 'Sales Date', 'value': 'Sales Period'},
+                                    {'label': 'Item', 'value': 'Item'},
+                                    {'label': 'Category', 'value': 'Category'},
+                                    {'label': 'Family', 'value': 'Family'},
+                                    {'label': 'Material', 'value': 'Material'}
+                                ],
+                                value='Material',  # Default value
+                                placeholder='Y axis',
+                                multi=False,
+                            )
+                        ], width=2),
+                    ]),
+                    dbc.CardBody([
+                        dbc.Row([
+                            dbc.Col([
+                                dcc.Graph(id='scatter-plot')
+                            ], width=12)
+                        ], style={'marginTop': '10px'}),
+                    ]),
                 ]),
-
             ], className='light-blue-table')  # Apply custom card style
         ], width=12)
     ], style={'paddingBottom': '10px'}),
@@ -748,41 +807,55 @@ def update_sales_cards(start_date, end_date, type_filter, category_filter, famil
     Output('scatter-plot', 'figure'),
     [Input('date-picker-range', 'start_date'),
      Input('date-picker-range', 'end_date'),
-     Input('type-filter', 'value'),
+     Input('scatter-type-filter', 'value'),
      Input('category-dropdown', 'value'),
      Input('family-dropdown', 'value'),
      Input('material-dropdown', 'value'),
-     Input('item-dropdown', 'value')]
+     Input('item-dropdown', 'value'),
+     Input('scatter-size-filter', 'value'),
+     Input('scatter-x-axis', 'value'),
+     Input('scatter-y-axis', 'value'),
+     ]
 )
 def update_scatter_plot(start_date, end_date, type_filter, category_filter, family_filter, material_filter,
-                        item_filter):
+                        item_filter, size_filter, x_axis_column, y_axis_column):
     # Filter the data
     filtered_df = filter_data(start_date, end_date, type_filter, category_filter, family_filter, material_filter,
                               item_filter)
 
+    print("Columns :")
+    print(filtered_df.columns)
+
+    # Determine the scaling factor for the size of markers
+    max_size = filtered_df[f"{size_filter}"].max() if len(filtered_df) > 0 else 1
+    sizeref = 2 * max_size / 100  # Adjust this scaling factor for better results
+
     # Create scatter plot
     scatter_plot = go.Figure(data=[
         go.Scatter(
-            x=filtered_df['Sales Period'],  # Use 'Sales Period' on x-axis
-            y=filtered_df['Sales Amount'],  # Sales Amount on y-axis
-            mode='markers',  # Scatter plot with markers
+            x=filtered_df[f"{x_axis_column}"],
+            y=filtered_df[f"{y_axis_column}"],
+            mode='markers',
             marker=dict(
-                size=10,  # Marker size
-                color='blue',  # Marker color
-                opacity=0.7  # Opacity
+                size=filtered_df[f"{size_filter}"],
+                color='blue',
+                opacity=0.7,
+                sizeref=sizeref,  # Adjusts size scaling
+                sizemin=4,  # Minimum size of the marker
             ),
-            text=filtered_df['Item']  # Hover text shows item
+            text=filtered_df['Item']
         )
     ])
 
     scatter_plot.update_layout(
         title="Sales Scatter Plot",
-        xaxis_title="Date",
-        yaxis_title="Sales Amount",
+        xaxis_title=f"{x_axis_column}",
+        yaxis_title=f"{y_axis_column}",
         template="plotly_white"
     )
 
     return scatter_plot
+
 
 
 # -------------------------------
