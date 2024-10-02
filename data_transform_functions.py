@@ -58,6 +58,47 @@ def extract_material(item):
         return 'Unknown'
 
 
+def extract_length(item):
+    if 'L7l32' in item.lower():
+        return '7/32'
+    elif 'L1l4' in item.lower():
+        return '1/4'
+    elif 'L9l32' in item.lower():
+        return '9/32'
+    elif 'L5l16' in item.lower():
+        return '5/16'
+    elif 'L11l32' in item.lower():
+        return '11/32'
+    elif '3l8' in item.lower():
+        return '3/8'
+    elif 'L7l16' in item.lower():
+        return '7/16'
+    elif 'L9l16' in item.lower():
+        return '9/16'
+    elif 'L7l8' in item.lower():
+        return '7/8'
+    elif 'L1 1l16' in item.lower():
+        return '1 1/16'
+    elif 'L1 1l8' in item.lower():
+        return '1 1/8'
+    elif 'L1' in item.lower():
+        return '1"'
+    elif 'L3l4' in item.lower():
+        return '3/4'
+    elif 'L5l8' in item.lower():
+        return '5/8'
+    elif 'L1l2' in item.lower():
+        return '1/2'
+    elif 'L3l16' in item.lower():
+        return '3/16'
+    elif 'L5l32' in item.lower():
+        return '5/32'
+    elif 'L-1l8' in item.lower():
+        return '1/8'
+    else:
+        return 'Unknown'
+
+
 def agg_so(so):
     # Ensure all necessary columns are of type string
     so['Document Number'] = so['Document Number'].astype(str)
