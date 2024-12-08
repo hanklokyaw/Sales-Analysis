@@ -13,7 +13,7 @@ from data_transform_functions import extract_material, agg_so
 # -------------------------------
 
 DOWNLOAD_FOLDER_PATH = "C:/Users/hank.aungkyaw/Downloads"
-SO_PREFIX = "SalesOrder1yearSalesOnlyHKResults906"
+SO_PREFIX = "SalesOrder1yearSalesOnlyHKResults"
 
 # -------------------------------
 # Data Loading and Preprocessing
@@ -24,14 +24,17 @@ so_filename = find_latest_report(DOWNLOAD_FOLDER_PATH, SO_PREFIX)
 if so_filename is None:
     raise FileNotFoundError(f"No file found with prefix '{SO_PREFIX}' in '{DOWNLOAD_FOLDER_PATH}'")
 
+print(so_filename)
+
 # Construct the full file path and load the data with low_memory=False to suppress DtypeWarnings
 so_filepath = f"{DOWNLOAD_FOLDER_PATH}/{so_filename}"
 so = pd.read_csv(so_filepath, low_memory=False)
-so = so[so["Date"] >= "4/1/2024"]
 
 # Print out the first few rows to verify data loading
 print("Loaded Sales Order Data:")
 print(so.head())
+
+print(so['Date'].unique())
 
 # Aggregate sales order data using the provided agg_so function
 agg_so_df = agg_so(so)
@@ -863,4 +866,4 @@ def update_scatter_plot(start_date, end_date, type_filter, category_filter, fami
 # -------------------------------
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(host='0.0.0.0', port=5090, debug=True)
